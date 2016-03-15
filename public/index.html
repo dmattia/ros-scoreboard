@@ -1,8 +1,49 @@
 <html>
 <head>
 	<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
 </head>
 <body>
-	Hello
+	<table>
+        <thead>
+          <tr>
+              <th data-field="id">Name</th>
+              <th data-field="name">Score</th>
+          </tr>
+        </thead>
+
+        <tbody id="table-data">
+        </tbody>
+      </table>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script>
+		var myFirebaseRef = new Firebase("https://ros.firebaseio.com/");
+		myFirebaseRef.on("value", function(snapshot) {
+			// clear table
+			var table = document.getElementById('table-data')
+			while(table.firstChild) {
+				table.removeChild(table.firstChild)
+			}
+
+			snapshot.forEach(function(childSnapshot) {
+				var key = childSnapshot.key();
+				var value = childSnapshot.val();
+				console.log(key + " : " + value)
+
+				// Create a table row for this
+				var row = document.createElement("tr")
+				var name = document.createElement("td")
+				var score = document.createElement("td")
+				name.innerHTML = key
+				score.innerHTML = value
+
+				row.appendChild(name)
+				row.appendChild(score)
+				table.appendChild(row)
+			});
+		});
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
 </body>
 </html>
