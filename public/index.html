@@ -2,45 +2,103 @@
 <head>
 	<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+	<style>
+		.progressbar-text {
+			font-size: 4em;
+			color: #fff !important;
+		}
+		body {
+			background-image: url("http://cdn.playbuzz.com/cdn/ecb6cea2-6292-403a-ae8f-a6089e666bef/20b354ff-5dc3-4d34-b897-3dfbc8e13ff2.jpg");
+			background-size: cover;
+			border-top: 80px solid transparent;
+   			background-clip: border-box;
+   			background-position: 0 -50px;
+			font-size: 5em;
+		}
+	</style>
 </head>
-<body>
-	<table>
-        <thead>
-          <tr>
-              <th data-field="id">Name</th>
-              <th data-field="name">Score</th>
-          </tr>
-        </thead>
-
-        <tbody id="table-data">
-        </tbody>
-      </table>
+<body class="row">
+	<div class="col s12 row">
+		<div class="col s3 offset-s2" id="circleDiv1"></div>
+		<div class="col s3 offset-s2" id="circleDiv2"></div>
+	</div>
+	<div class="col s12 row">
+		<div class="col s3 offset-s2" id="circleDiv3"></div>
+		<div class="col s3 offset-s2" id="circleDiv4"></div>
+	</div>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+	<script type="text/javascript" src="js/progressbar.min.js"></script> 
 	<script>
-		var myFirebaseRef = new Firebase("https://ros.firebaseio.com/");
+		var circle1 = new ProgressBar.Circle('#circleDiv1', {
+		    color: '#202020',
+		    strokeWidth: 5,
+		    trailWidth: 1,
+		    easing: 'easeInOut',
+		    duration: 1000,
+		
+		    from: { color: '#f00', width: 2 },
+		    to: { color: '#f00', width: 6 },
+		    step: function(state, circle) {
+		        circle.path.setAttribute('stroke', state.color);
+		        circle.path.setAttribute('stroke-width', state.width);
+		    }
+		});
+		var circle2 = new ProgressBar.Circle('#circleDiv2', {
+		    color: '#202020',
+		    strokeWidth: 5,
+		    trailWidth: 1,
+		    easing: 'easeInOut',
+		    duration: 1000,
+		
+		    from: { color: '#0f0', width: 2 },
+		    to: { color: '#0f0', width: 6 },
+		    step: function(state, circle) {
+		        circle.path.setAttribute('stroke', state.color);
+		        circle.path.setAttribute('stroke-width', state.width);
+		    }
+		});
+		var circle3 = new ProgressBar.Circle('#circleDiv3', {
+		    color: '#202020',
+		    strokeWidth: 5,
+		    trailWidth: 1,
+		    easing: 'easeInOut',
+		    duration: 1000,
+		
+		    from: { color: '#ff0', width: 2 },
+		    to: { color: '#ff0', width: 6 },
+		    step: function(state, circle) {
+		        circle.path.setAttribute('stroke', state.color);
+		        circle.path.setAttribute('stroke-width', state.width);
+		    }
+		});
+		var circle4 = new ProgressBar.Circle('#circleDiv4', {
+		    color: '#202020',
+		    strokeWidth: 5,
+		    trailWidth: 1,
+		    easing: 'easeInOut',
+		    duration: 1000,
+		
+		    from: { color: '#00f', width: 2 },
+		    to: { color: '#00f', width: 6 },
+		    step: function(state, circle) {
+		        circle.path.setAttribute('stroke', state.color);
+		        circle.path.setAttribute('stroke-width', state.width);
+		    }
+		});
+		
+		var myFirebaseRef = new Firebase("https://ros.firebaseio.com/scores");
 		myFirebaseRef.on("value", function(snapshot) {
-			// clear table
-			var table = document.getElementById('table-data')
-			while(table.firstChild) {
-				table.removeChild(table.firstChild)
-			}
-
+			var circles = [circle4, circle2, circle1, circle3]
+			var i = 0
 			snapshot.forEach(function(childSnapshot) {
 				var key = childSnapshot.key();
 				var value = childSnapshot.val();
 				console.log(key + " : " + value)
 
-				// Create a table row for this
-				var row = document.createElement("tr")
-				var name = document.createElement("td")
-				var score = document.createElement("td")
-				name.innerHTML = key
-				score.innerHTML = value
-
-				row.appendChild(name)
-				row.appendChild(score)
-				table.appendChild(row)
+				circles[i].animate(value / 10.0)	
+				circles[i].setText(value * 10)
+				i = i + 1
 			});
 		});
 	</script>
